@@ -1,14 +1,16 @@
 from PyInstaller.utils.hooks import collect_data_files
+import os
 
 block_cipher = None
+
+# Collect data files for docx
+docx_datas = collect_data_files('docx')
 
 a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[
-        ('/Users/mac/Library/Python/3.9/lib/python/site-packages/docx', 'docx'),
-    ],
+    datas=docx_datas,
     hiddenimports=[
         'PyQt6.QtCore',
         'PyQt6.QtGui',
