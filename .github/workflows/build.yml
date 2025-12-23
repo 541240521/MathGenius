@@ -40,7 +40,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: MathGenius-Windows
-        path: dist/MathGenius/
+        path: dist/*.exe
 
     - name: Upload Artifact (macOS)
       if: matrix.os == 'macos-latest'
@@ -49,4 +49,4 @@ jobs:
         name: MathGenius-macOS
         path: |
           dist/MathGenius.app
-          dist/MathGenius/
+          dist/MathGenius

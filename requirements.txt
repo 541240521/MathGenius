@@ -1,3 +1,5 @@
-PyQt6==6.6.1
+PyQt6==6.6.0
+PyQt6-Qt6==6.6.0
+PyQt6-sip
 reportlab==4.0.9
 python-docx==1.1.0
