@@ -1,17 +1,21 @@
 from PyInstaller.utils.hooks import collect_data_files, collect_submodules, collect_all
+import os
 
 block_cipher = None
 
-# 使用 collect_all 彻底抓取 PyQt6 和 docx 的所有依赖
+# docx 依然建议使用 collect_all，因为它比较小且依赖复杂
 docx_tmp_ret = collect_all('docx')
-pyqt6_tmp_ret = collect_all('PyQt6')
 
 a = Analysis(
     ['main.py'],
     pathex=[],
-    binaries=docx_tmp_ret[1] + pyqt6_tmp_ret[1],
-    datas=docx_tmp_ret[0] + pyqt6_tmp_ret[0],
-    hiddenimports=docx_tmp_ret[2] + pyqt6_tmp_ret[2] + [
+    binaries=docx_tmp_ret[1],
+    datas=docx_tmp_ret[0],
+    hiddenimports=docx_tmp_ret[2] + [
+        'PyQt6.QtCore',
+        'PyQt6.QtGui',
+        'PyQt6.QtWidgets',
+        'PyQt6.sip',
         'reportlab',
         'core.presets',
         'core.math_engine',
@@ -23,7 +27,7 @@ a = Analysis(
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=[],
+    excludes=['tkinter', 'unittest', 'test'], # 排除无关库减小体积
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
     cipher=block_cipher,
