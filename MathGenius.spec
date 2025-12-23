@@ -1,22 +1,18 @@
-from PyInstaller.utils.hooks import collect_data_files
-import os
+from PyInstaller.utils.hooks import collect_data_files, collect_submodules, collect_all
 
 block_cipher = None
 
-# Collect data files for docx
-docx_datas = collect_data_files('docx')
+# 使用 collect_all 彻底抓取 PyQt6 和 docx 的所有依赖
+docx_tmp_ret = collect_all('docx')
+pyqt6_tmp_ret = collect_all('PyQt6')
 
 a = Analysis(
     ['main.py'],
     pathex=[],
-    binaries=[],
-    datas=docx_datas,
-    hiddenimports=[
-        'PyQt6.QtCore',
-        'PyQt6.QtGui',
-        'PyQt6.QtWidgets',
+    binaries=docx_tmp_ret[1] + pyqt6_tmp_ret[1],
+    datas=docx_tmp_ret[0] + pyqt6_tmp_ret[0],
+    hiddenimports=docx_tmp_ret[2] + pyqt6_tmp_ret[2] + [
         'reportlab',
-        'docx',
         'core.presets',
         'core.math_engine',
         'ui.main_window',
@@ -38,17 +34,13 @@ pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 exe = EXE(
     pyz,
     a.scripts,
-    a.binaries,
-    a.zipfiles,
-    a.datas,
     [],
+    exclude_binaries=True,
     name='MathGenius',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    upx_exclude=[],
-    runtime_tmpdir=None,
     console=False,
     disable_windowed_traceback=False,
     argv_emulation=False,
@@ -58,8 +50,19 @@ exe = EXE(
     icon=['resources/icon.ico'] if os.path.exists('resources/icon.ico') else None,
 )
 
-app = BUNDLE(
+coll = COLLECT(
     exe,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    strip=False,
+    upx=True,
+    upx_exclude=[],
+    name='MathGenius',
+)
+
+app = BUNDLE(
+    coll,
     name='MathGenius.app',
     icon='resources/icon.icns' if os.path.exists('resources/icon.icns') else None,
     bundle_identifier='com.mathgenius.generator',
