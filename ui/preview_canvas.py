@@ -169,8 +169,8 @@ class PreviewCanvas(QWidget):
             # In vertical layout, the question at (row, col) has index:
             global_idx = start_idx + i 
             
-            x = 40 + col * col_width
-            y = start_y + row * row_height
+            x = int(40 + col * col_width)
+            y = int(start_y + row * row_height)
             
             if y > virtual_h - 100:
                 break
